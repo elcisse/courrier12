@@ -24,15 +24,16 @@ Application MVC legere pour la gestion des courriers entrants et sortants dans u
 
 - Tableau de bord avec indicateurs clefs et derniers courriers
 - Gestion CRUD des services (code, libelle, statut actif)
-- Gestion CRUD des courriers (type entrant/sortant, statut, priorite, confidentialite, echeance, services lies)
+- Ajout et gestion de pieces jointes (PDF, images, bureautique) avec telechargement et suppression controlee
 - Filtres par type, statut, service cible et recherche texte
 - Protection CSRF basique et messages flash
 
 ## Notes
 
-- Les comptes utilisateurs ne sont pas encore integres; le champ `created_by` doit referencer un identifiant valide de la table `utilisateurs` (ex: 1 apres import des seeds).
-- Les tables `pieces_jointes`, `affectations`, `statut_history` et `logs` sont prevues par le schema et pourront etre exploitees dans des evolutions futures.
-- Le projet utilise un routeur simple via les parametres `controller` et `action` (`index.php?controller=courrier&action=index`).
+- Les comptes utilisateurs ne sont pas encore integres; le champ created_by doit referencer un identifiant valide de la table utilisateurs (ex: 1 apres import des seeds).
+- Le dossier public/uploads doit etre accessible en ecriture par le serveur web pour permettre l'enregistrement des fichiers.
+- La table pieces_jointes est utilisee pour stocker les fichiers rattaches. Les tables affectations, statut_history et logs restent disponibles pour de futures evolutions.
+- Le projet utilise un routeur simple via les parametres controller et action (index.php?controller=courrier&action=index).
 
 ## Scripts utiles
 
@@ -41,3 +42,8 @@ Application MVC legere pour la gestion des courriers entrants et sortants dans u
   mysql -u root -p courrier24 < database/schema.sql
   ```
 - Nettoyer le cache de session si besoin : supprimer manuellement le contenu du dossier de sessions PHP.
+
+
+
+
+

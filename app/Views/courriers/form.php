@@ -17,10 +17,28 @@ $values = [
     'echeance'          => call_user_func([$helpers, 'old'], 'echeance', $courrier['echeance'] ?? ''),
     'created_by'        => call_user_func([$helpers, 'old'], 'created_by', $courrier['created_by'] ?? 1),
 ];
+$attachments = $attachments ?? [];
+$formatSize = static function ($bytes): string {
+    $bytes = (int) $bytes;
+    if ($bytes < 1024) {
+        return $bytes . ' o';
+    }
+
+    $units = ['Ko', 'Mo', 'Go'];
+    $index = 0;
+    $size = $bytes / 1024;
+
+    while ($size >= 1024 && $index < count($units) - 1) {
+        $size /= 1024;
+        $index++;
+    }
+
+    return number_format($size, 1, ',', ' ') . ' ' . $units[$index];
+};
 ?>
 <section class="page-header">
     <h2><?= $isEdit ? 'Modifier le courrier' : 'Enregistrer un courrier' ?></h2>
-    <p>Les champs marques d\'une etoile sont obligatoires.</p>
+    <p>Les champs marques d'une etoile sont obligatoires.</p>
 </section>
 
 <?php if (!empty($errors['base'])): ?>
@@ -29,7 +47,7 @@ $values = [
     </div>
 <?php endif; ?>
 
-<form method="post" action="<?= $actionUrl ?>" class="form-card">
+<form method="post" action="<?= $actionUrl ?>" class="form-card" enctype="multipart/form-data">
     <input type="hidden" name="_token" value="<?= $helpers::csrfToken() ?>">
     <?php if ($isEdit): ?>
         <input type="hidden" name="id" value="<?= (int) $courrier['id'] ?>">
@@ -161,7 +179,38 @@ $values = [
                 <p class="form-error"><?= $helpers::sanitize($errors['created_by']) ?></p>
             <?php endif; ?>
         </div>
+
+        <div class="form-field wide">
+            <label for="pieces_jointes">Pieces jointes</label>
+            <input type="file" name="pieces_jointes[]" id="pieces_jointes" multiple accept="application/pdf,image/*,.doc,.docx,.xls,.xlsx,.odt,.ods,.zip,.rar,.txt">
+            <p class="form-hint">Formats acceptes: PDF, images, bureautique. Taille maximale: 10 Mo par fichier.</p>
+        </div>
     </div>
+
+    <?php if (!empty($attachments)): ?>
+        <section class="attachments-card" aria-labelledby="attachments-title">
+            <div class="attachments-header">
+                <h3 id="attachments-title">Pieces jointes existantes</h3>
+                <p class="attachments-hint">Cochez les fichiers a supprimer lors de la validation.</p>
+            </div>
+            <ul class="attachments-list">
+                <?php foreach ($attachments as $piece): ?>
+                    <li class="attachments-item">
+                        <div class="attachments-meta">
+                            <a class="attachments-link" href="<?= $helpers::sanitize($helpers::route('courrier', 'download', ['id' => $piece['id']])) ?>">
+                                <?= $helpers::sanitize($piece['nom_fichier'] ?? 'Document') ?>
+                            </a>
+                            <span class="attachments-size"><?= $helpers::sanitize($formatSize($piece['taille'] ?? 0)) ?></span>
+                        </div>
+                        <label class="attachments-remove">
+                            <input type="checkbox" name="attachments_to_delete[]" value="<?= (int) $piece['id'] ?>">
+                            Supprimer
+                        </label>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </section>
+    <?php endif; ?>
 
     <div class="form-actions">
         <button type="submit" class="button">Enregistrer</button>

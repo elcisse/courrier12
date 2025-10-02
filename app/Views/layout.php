@@ -25,7 +25,7 @@ $csrfToken = $helpers::csrfToken();
     </header>
 
     <main class="container">
-        <?php foreach (['success', 'error'] as $flashKey): ?>
+        <?php foreach (['success', 'warning', 'error'] as $flashKey): ?>
             <?php if ($message = $helpers::flash($flashKey)): ?>
                 <div class="alert alert-<?= $flashKey ?>">
                     <?= $helpers::sanitize($message) ?>

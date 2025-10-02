@@ -61,6 +61,7 @@
                 <th>Service cible</th>
                 <th>Priorite</th>
                 <th>Echeance</th>
+                <th>PJ</th>
                 <th class="actions">Actions</th>
             </tr>
         </thead>
@@ -76,6 +77,9 @@
                         <td><?= $helpers::sanitize($courrier['service_cible'] ?? 'Non defini') ?></td>
                         <td><?= $helpers::sanitize($courrier['priorite'] ?? '') ?></td>
                         <td><?= $helpers::sanitize($courrier['echeance'] ?? '') ?></td>
+                        <td>
+                            <span class="attachments-count" data-empty="<?= ((int) ($courrier['attachments_count'] ?? 0)) === 0 ? 'true' : 'false' ?>"><?= (int) ($courrier['attachments_count'] ?? 0) ?></span>
+                        </td>
                         <td class="actions">
                             <a class="button button-small" href="<?= $helpers::route('courrier', 'edit', ['id' => $courrier['id']]) ?>">Modifier</a>
                             <form method="post" action="<?= $helpers::route('courrier', 'delete') ?>" class="inline-form" onsubmit="return confirm('Supprimer ce courrier ?');">
@@ -88,9 +92,11 @@
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="9" class="text-center">Aucun courrier trouve.</td>
+                    <td colspan="10" class="text-center">Aucun courrier trouve.</td>
                 </tr>
             <?php endif; ?>
         </tbody>
     </table>
 </div>
+
+
