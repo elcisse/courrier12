@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $isEdit = isset($courrier['id']);
 $actionUrl = $action ?? $helpers::route('courrier', $isEdit ? 'update' : 'store');
 $values = [
@@ -15,7 +15,6 @@ $values = [
     'service_cible_id'  => call_user_func([$helpers, 'old'], 'service_cible_id', $courrier['service_cible_id'] ?? ''),
     'statut'            => call_user_func([$helpers, 'old'], 'statut', $courrier['statut'] ?? 'ENREGISTRE'),
     'echeance'          => call_user_func([$helpers, 'old'], 'echeance', $courrier['echeance'] ?? ''),
-    'created_by'        => call_user_func([$helpers, 'old'], 'created_by', $courrier['created_by'] ?? 1),
 ];
 $attachments = $attachments ?? [];
 $formatSize = static function ($bytes): string {
@@ -169,14 +168,6 @@ $formatSize = static function ($bytes): string {
             <input type="date" name="echeance" id="echeance" value="<?= $helpers::sanitize((string) $values['echeance']) ?>">
             <?php if (!empty($errors['echeance'])): ?>
                 <p class="form-error"><?= $helpers::sanitize($errors['echeance']) ?></p>
-            <?php endif; ?>
-        </div>
-
-        <div class="form-field">
-            <label for="created_by">Utilisateur createur *</label>
-            <input type="number" name="created_by" id="created_by" value="<?= (int) $values['created_by'] ?>" min="1" required>
-            <?php if (!empty($errors['created_by'])): ?>
-                <p class="form-error"><?= $helpers::sanitize($errors['created_by']) ?></p>
             <?php endif; ?>
         </div>
 

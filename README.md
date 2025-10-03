@@ -25,15 +25,16 @@ Application MVC legere pour la gestion des courriers entrants et sortants dans u
 - Tableau de bord avec indicateurs clefs et derniers courriers
 - Gestion CRUD des services (code, libelle, statut actif)
 - Ajout et gestion de pieces jointes (PDF, images, bureautique) avec telechargement et suppression controlee
+- Authentification basique (login/logout) et attribution automatique du createur
 - Filtres par type, statut, service cible et recherche texte
 - Protection CSRF basique et messages flash
 
 ## Notes
 
-- Les comptes utilisateurs ne sont pas encore integres; le champ created_by doit referencer un identifiant valide de la table utilisateurs (ex: 1 apres import des seeds).
 - Le dossier public/uploads doit etre accessible en ecriture par le serveur web pour permettre l'enregistrement des fichiers.
-- La table pieces_jointes est utilisee pour stocker les fichiers rattaches. Les tables affectations, statut_history et logs restent disponibles pour de futures evolutions.
-- Le projet utilise un routeur simple via les parametres controller et action (index.php?controller=courrier&action=index).
+- Les utilisateurs doivent exister dans la table `utilisateurs` (champ `mdp_hash` genere via `password_hash`). Les courriers utilisent automatiquement l'utilisateur connecte pour le champ `created_by`.
+- La table `pieces_jointes` est utilisee pour stocker les fichiers rattaches. Les tables `affectations`, `statut_history` et `logs` restent disponibles pour de futures evolutions.
+- Le projet utilise un routeur simple via les parametres `controller` et `action` (`index.php?controller=courrier&action=index`).
 
 ## Scripts utiles
 

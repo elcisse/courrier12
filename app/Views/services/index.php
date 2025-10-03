@@ -1,4 +1,4 @@
-<section class="page-header">
+﻿<section class="page-header">
     <h2>Services</h2>
     <p>Gestion des services et directions.</p>
     <a class="button" href="<?= $helpers::route('service', 'create') ?>">Ajouter un service</a>

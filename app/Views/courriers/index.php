@@ -1,4 +1,4 @@
-<section class="page-header">
+﻿<section class="page-header">
     <h2>Courriers</h2>
     <p>Liste des courriers entrants et sortants.</p>
     <a class="button" href="<?= $helpers::route('courrier', 'create') ?>">Ajouter un courrier</a>
@@ -77,8 +77,10 @@
                         <td><?= $helpers::sanitize($courrier['service_cible'] ?? 'Non defini') ?></td>
                         <td><?= $helpers::sanitize($courrier['priorite'] ?? '') ?></td>
                         <td><?= $helpers::sanitize($courrier['echeance'] ?? '') ?></td>
-                        <td>
-                            <span class="attachments-count" data-empty="<?= ((int) ($courrier['attachments_count'] ?? 0)) === 0 ? 'true' : 'false' ?>"><?= (int) ($courrier['attachments_count'] ?? 0) ?></span>
+                        <td class="attachments-cell" data-count="<?= (int) ($courrier['attachments_count'] ?? 0) ?>">
+                            <span class="attachments-count">
+                                <?= (int) ($courrier['attachments_count'] ?? 0) ?>
+                            </span>
                         </td>
                         <td class="actions">
                             <a class="button button-small" href="<?= $helpers::route('courrier', 'edit', ['id' => $courrier['id']]) ?>">Modifier</a>
@@ -98,5 +100,3 @@
         </tbody>
     </table>
 </div>
-
-

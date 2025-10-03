@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $currentController = strtolower($_GET['controller'] ?? 'home');
 $currentAction = strtolower($_GET['action'] ?? 'index');
 $csrfToken = $helpers::csrfToken();
@@ -19,8 +19,22 @@ $csrfToken = $helpers::csrfToken();
             <nav class="main-nav">
                 <a href="<?= $helpers::route('home') ?>" class="<?= $currentController === 'home' ? 'active' : '' ?>">Accueil</a>
                 <a href="<?= $helpers::route('courrier') ?>" class="<?= $currentController === 'courrier' ? 'active' : '' ?>">Courriers</a>
-                <a href="<?= $helpers::route('service') ?>" class="<?= $currentController === 'service' ? 'active' : '' ?>">Services</a>
+                <?php if (!empty($authUser) && ($authUser['role'] ?? '') === 'ADMIN'): ?>
+                    <a href="<?= $helpers::route('service') ?>" class="<?= $currentController === 'service' ? 'active' : '' ?>">Services</a>
+                    <a href="<?= $helpers::route('user') ?>" class="<?= $currentController === 'user' ? 'active' : '' ?>">Utilisateurs</a>
+                <?php endif; ?>
             </nav>
+            <div class="user-nav">
+                <?php if (!empty($authUser)): ?>
+                    <span class="user-nav__name"><?= $helpers::sanitize($authUser['name'] ?? $authUser['login'] ?? 'Utilisateur') ?></span>
+                    <form method="post" action="<?= $helpers::route('auth', 'logout') ?>" class="inline-form">
+                        <input type="hidden" name="_token" value="<?= $csrfToken ?>">
+                        <button type="submit" class="button button-light button-small">Se deconnecter</button>
+                    </form>
+                <?php else: ?>
+                    <a class="button button-light" href="<?= $helpers::route('auth', 'login') ?>">Se connecter</a>
+                <?php endif; ?>
+            </div>
         </div>
     </header>
 

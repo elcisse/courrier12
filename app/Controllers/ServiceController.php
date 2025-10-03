@@ -9,6 +9,16 @@ use PDOException;
 
 class ServiceController extends BaseController
 {
+    public function __construct()
+    {
+        parent::__construct();
+
+        if (($this->user()['role'] ?? '') !== 'ADMIN') {
+            Helpers::flash('error', 'Acces reserve aux administrateurs.');
+            Helpers::redirect(Helpers::route('home'));
+        }
+    }
+
     public function index(): void
     {
         $services = Service::all();

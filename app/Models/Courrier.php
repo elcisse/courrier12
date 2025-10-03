@@ -14,7 +14,10 @@ class Courrier
 
     public static function all(array $filters = []): array
     {
-        $sql = 'SELECT c.*,\n               s1.libelle AS service_source,\n               s2.libelle AS service_cible,\n               (SELECT COUNT(*) FROM pieces_jointes pj WHERE pj.courrier_id = c.id) AS attachments_count
+        $sql = 'SELECT c.*,
+               s1.libelle AS service_source,
+               s2.libelle AS service_cible,
+               (SELECT COUNT(*) FROM pieces_jointes pj WHERE pj.courrier_id = c.id) AS attachments_count
                 FROM courriers c
                 LEFT JOIN services s1 ON s1.id = c.service_source_id
                 LEFT JOIN services s2 ON s2.id = c.service_cible_id
@@ -48,7 +51,10 @@ class Courrier
 
     public static function find(int $id): ?array
     {
-        $sql = 'SELECT c.*,\n               s1.libelle AS service_source,\n               s2.libelle AS service_cible,\n               (SELECT COUNT(*) FROM pieces_jointes pj WHERE pj.courrier_id = c.id) AS attachments_count
+        $sql = 'SELECT c.*,
+               s1.libelle AS service_source,
+               s2.libelle AS service_cible,
+               (SELECT COUNT(*) FROM pieces_jointes pj WHERE pj.courrier_id = c.id) AS attachments_count
                 FROM courriers c
                 LEFT JOIN services s1 ON s1.id = c.service_source_id
                 LEFT JOIN services s2 ON s2.id = c.service_cible_id
@@ -134,4 +140,5 @@ class Courrier
         ];
     }
 }
+
 

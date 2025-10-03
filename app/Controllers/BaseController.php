@@ -9,18 +9,33 @@ use RuntimeException;
 abstract class BaseController
 {
     protected string $layout = 'layout';
+    protected ?array $currentUser = null;
+
+    public function __construct()
+    {
+        $this->currentUser = $_SESSION['auth_user'] ?? null;
+
+        if ($this->requiresAuthentication() && !$this->currentUser) {
+            Helpers::flash('error', 'Veuillez vous connecter pour continuer.');
+            Helpers::redirect(Helpers::route('auth', 'login'));
+        }
+    }
 
     protected function render(string $view, array $data = []): void
     {
         $errors = Helpers::consumeErrors();
-        $dataWithErrors = array_merge($data, ['errors' => $errors]);
-        $content = $this->renderView($view, $dataWithErrors);
+        $dataWithState = array_merge($data, [
+            'errors'   => $errors,
+            'authUser' => $this->currentUser,
+        ]);
+        $content = $this->renderView($view, $dataWithState);
         $layoutPath = BASE_PATH . '/app/Views/' . $this->layout . '.php';
 
         if (is_readable($layoutPath)) {
-            $pageTitle = $dataWithErrors['title'] ?? null;
+            $pageTitle = $dataWithState['title'] ?? null;
             $helpers = Helpers::class;
-            extract($dataWithErrors, EXTR_SKIP);
+            extract($dataWithState, EXTR_SKIP);
+            $authUser = $this->currentUser;
             require $layoutPath;
         } else {
             echo $content;
@@ -40,6 +55,7 @@ abstract class BaseController
         ob_start();
         $helpers = Helpers::class;
         extract($data, EXTR_SKIP);
+        $authUser = $this->currentUser;
         require $viewPath;
 
         return (string) ob_get_clean();
@@ -85,4 +101,24 @@ abstract class BaseController
     {
         Helpers::redirect(Helpers::route($controller, $action, $params));
     }
+
+    protected function requiresAuthentication(): bool
+    {
+        return true;
+    }
+
+    protected function user(): ?array
+    {
+        return $this->currentUser;
+    }
+
+    protected function userId(): ?int
+    {
+        return $this->currentUser['id'] ?? null;
+    }
 }
+
+
+
+
+

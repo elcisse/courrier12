@@ -1,4 +1,4 @@
-<section class="page-header">
+﻿<section class="page-header">
     <h2>Tableau de bord</h2>
     <p>Suivi rapide des indicateurs clefs.</p>
 </section>

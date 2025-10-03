@@ -78,6 +78,14 @@ class CourrierController extends BaseController
         $this->validateCsrfOrFail();
 
         $data = $this->courrierPayload();
+        $data['created_by'] = (int) ($this->userId() ?? 0);
+
+        if ($data['created_by'] < 1) {
+            Helpers::flash('error', 'Session expiree. Veuillez vous reconnecter.');
+            $this->redirect('auth', 'login');
+            return;
+        }
+
         $errors = $this->validateCourrier($data);
 
         if (!empty($errors)) {
@@ -149,6 +157,14 @@ class CourrierController extends BaseController
         }
 
         $data = $this->courrierPayload();
+        $data['created_by'] = (int) ($courrier['created_by'] ?? ($this->userId() ?? 0));
+
+        if ($data['created_by'] < 1) {
+            Helpers::flash('error', 'Session expiree. Veuillez vous reconnecter.');
+            $this->redirect('auth', 'login');
+            return;
+        }
+
         $errors = $this->validateCourrier($data, true);
 
         if (!empty($errors)) {
@@ -261,7 +277,6 @@ class CourrierController extends BaseController
             'service_cible_id'  => $this->input('service_cible_id') ? (int) $this->input('service_cible_id') : null,
             'statut'            => (string) $this->input('statut', 'ENREGISTRE'),
             'echeance'          => $this->input('echeance') ?: null,
-            'created_by'        => $this->input('created_by') ? (int) $this->input('created_by') : 1,
         ];
     }
 
@@ -303,20 +318,16 @@ class CourrierController extends BaseController
             $errors['date_envoi'] = 'La date d\'envoi est obligatoire pour un courrier sortant.';
         }
 
-        if (!empty($data['echeance']) && !preg_match('/^\\d{4}-\\d{2}-\\d{2}$/', (string) $data['echeance'])) {
+        if (!empty($data['echeance']) && !preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $data['echeance'])) {
             $errors['echeance'] = 'Format de date d\'echeance invalide (AAAA-MM-JJ).';
         }
 
-        if (!empty($data['date_reception']) && !preg_match('/^\\d{4}-\\d{2}-\\d{2}$/', (string) $data['date_reception'])) {
+        if (!empty($data['date_reception']) && !preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $data['date_reception'])) {
             $errors['date_reception'] = 'Format de date de reception invalide (AAAA-MM-JJ).';
         }
 
-        if (!empty($data['date_envoi']) && !preg_match('/^\\d{4}-\\d{2}-\\d{2}$/', (string) $data['date_envoi'])) {
+        if (!empty($data['date_envoi']) && !preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $data['date_envoi'])) {
             $errors['date_envoi'] = 'Format de date d\'envoi invalide (AAAA-MM-JJ).';
-        }
-
-        if (empty($data['created_by']) || !is_int($data['created_by']) || $data['created_by'] < 1) {
-            $errors['created_by'] = 'Utilisateur createur invalide.';
         }
 
         return $errors;
@@ -449,7 +460,7 @@ class CourrierController extends BaseController
         $normalized = str_replace(['\\', '..'], ['/', ''], $relativePath);
         $normalized = ltrim($normalized, '/');
 
-        return rtrim(BASE_PATH . '/public/uploads', '/\\') . '/' . $normalized;
+        return rtrim(BASE_PATH . '/public/uploads', "/\\") . '/' . $normalized;
     }
 
     private function detectMimeType(string $filePath, string $fallback): string
@@ -536,6 +547,8 @@ class CourrierController extends BaseController
         exit;
     }
 }
+
+
 
 
 
