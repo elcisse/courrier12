@@ -35,12 +35,7 @@ class CourrierController extends BaseController
 
     public function index(): void
     {
-        $filters = [
-            'type'             => $this->input('type'),
-            'statut'           => $this->input('statut'),
-            'service_cible_id' => $this->input('service_cible_id'),
-            'search'           => $this->input('search'),
-        ];
+        $filters = $this->collectFilters();
 
         $courriers = Courrier::all($filters);
         $services = Service::all();
@@ -53,6 +48,40 @@ class CourrierController extends BaseController
             'types'     => Courrier::TYPES,
             'statuts'   => Courrier::STATUTS,
         ]);
+    }
+
+    public function print(): void
+    {
+        $filters = $this->collectFilters();
+
+        $courriers = Courrier::all($filters);
+        $services = Service::all();
+
+        $previousLayout = $this->layout;
+        $this->layout = 'layout-print';
+
+        $this->render('courriers/print', [
+            'title'     => 'Etat des courriers',
+            'courriers' => $courriers,
+            'filters'   => $filters,
+            'services'  => $services,
+            'types'     => Courrier::TYPES,
+            'statuts'   => Courrier::STATUTS,
+        ]);
+
+        $this->layout = $previousLayout;
+    }
+
+    private function collectFilters(): array
+    {
+        return [
+            'type'             => $this->input('type'),
+            'statut'           => $this->input('statut'),
+            'service_cible_id' => $this->input('service_cible_id'),
+            'search'           => $this->input('search'),
+            'date_start'       => $this->input('date_start'),
+            'date_end'         => $this->input('date_end'),
+        ];
     }
 
     public function create(): void

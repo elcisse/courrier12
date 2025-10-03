@@ -44,6 +44,16 @@ class Courrier
             $params['search'] = '%' . $filters['search'] . '%';
         }
 
+        if (!empty($filters['date_start'])) {
+            $sql .= ' AND DATE(c.created_at) >= :date_start';
+            $params['date_start'] = $filters['date_start'];
+        }
+
+        if (!empty($filters['date_end'])) {
+            $sql .= ' AND DATE(c.created_at) <= :date_end';
+            $params['date_end'] = $filters['date_end'];
+        }
+
         $sql .= ' ORDER BY c.created_at DESC';
 
         return DB::run($sql, $params)->fetchAll();

@@ -1,7 +1,34 @@
-﻿<section class="page-header">
-    <h2>Courriers</h2>
-    <p>Liste des courriers entrants et sortants.</p>
-    <a class="button" href="<?= $helpers::route('courrier', 'create') ?>">Ajouter un courrier</a>
+﻿<?php
+$printParams = [];
+if (!empty($filters['type'])) {
+    $printParams['type'] = $filters['type'];
+}
+if (!empty($filters['statut'])) {
+    $printParams['statut'] = $filters['statut'];
+}
+if (!empty($filters['service_cible_id'])) {
+    $printParams['service_cible_id'] = $filters['service_cible_id'];
+}
+if (!empty($filters['search'])) {
+    $printParams['search'] = $filters['search'];
+}
+if (!empty($filters['date_start'])) {
+    $printParams['date_start'] = $filters['date_start'];
+}
+if (!empty($filters['date_end'])) {
+    $printParams['date_end'] = $filters['date_end'];
+}
+$printUrl = $helpers::route('courrier', 'print', $printParams);
+?>
+<section class="page-header">
+    <div>
+        <h2>Courriers</h2>
+        <p>Liste des courriers entrants et sortants.</p>
+    </div>
+    <div class="page-header__actions">
+        <a class="button button-light" href="<?= $printUrl ?>" target="_blank" rel="noopener">Etat imprimable</a>
+        <a class="button" href="<?= $helpers::route('courrier', 'create') ?>">Ajouter un courrier</a>
+    </div>
 </section>
 
 <form method="get" action="index.php" class="filter-bar">
@@ -41,6 +68,16 @@
     <div class="filter-field">
         <label for="filter-search">Recherche</label>
         <input type="text" name="search" id="filter-search" value="<?= $helpers::sanitize((string) ($filters['search'] ?? '')) ?>" placeholder="Objet ou reference">
+    </div>
+
+    <div class="filter-field">
+        <label for="filter-date-start">Date debut (creation)</label>
+        <input type="date" name="date_start" id="filter-date-start" value="<?= $helpers::sanitize((string) ($filters['date_start'] ?? '')) ?>">
+    </div>
+
+    <div class="filter-field">
+        <label for="filter-date-end">Date fin (creation)</label>
+        <input type="date" name="date_end" id="filter-date-end" value="<?= $helpers::sanitize((string) ($filters['date_end'] ?? '')) ?>">
     </div>
 
     <div class="filter-actions">
