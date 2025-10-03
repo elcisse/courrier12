@@ -23,8 +23,8 @@
         <h3>Courriers recents</h3>
         <a class="button" href="<?= $helpers::route('courrier', 'create') ?>">Nouveau courrier</a>
     </div>
-    <div class="table-responsive">
-        <table class="data-table">
+    <div class="table-responsive table-responsive--dashboard">
+        <table class="data-table dashboard-table">
             <thead>
                 <tr>
                     <th>Reference</th>
@@ -42,7 +42,20 @@
                             <td><?= $helpers::sanitize($row['ref'] ?? '') ?></td>
                             <td><?= $helpers::sanitize($row['objet'] ?? '') ?></td>
                             <td><?= $helpers::sanitize($row['type'] ?? '') ?></td>
-                            <td><?= $helpers::sanitize($row['statut'] ?? '') ?></td>
+                            <?php
+                            $statusRaw = (string) ($row['statut'] ?? '');
+                            $statusKey = strtolower(preg_replace('/[^A-Z0-9_]/', '', strtoupper($statusRaw)));
+                            if ($statusKey === '') {
+                                $statusKey = 'default';
+                            }
+                            $statusClass = str_replace('_', '-', $statusKey);
+                            $statusLabel = $statusRaw !== '' ? ucwords(strtolower(str_replace('_', ' ', $statusRaw))) : 'Non defini';
+                        ?>
+                        <td>
+                            <span class="status-badge status-badge--<?= $helpers::sanitize($statusClass) ?>">
+                                <?= $helpers::sanitize($statusLabel) ?>
+                            </span>
+                        </td>
                             <td><?= $helpers::sanitize($row['service_cible'] ?? 'Non defini') ?></td>
                             <td><?= $helpers::sanitize(substr((string) ($row['created_at'] ?? ''), 0, 10)) ?></td>
                         </tr>
